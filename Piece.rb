@@ -111,6 +111,32 @@ class Pawn < Piece
   end
 
   def capture?(move)
+    piece = @board[move]
+    if piece == nil
+      false
+    elsif piece.color != self.color
+       true
+    else
+      false
+    end
+    # check on piece
+  end
+
+  def valid_move?(move)
+    delta = move[0] - @pos[0]
+    # move logic
+    if delta == 0
+      if @board.on_board?(move)
+        if @board[move] == nil
+           true
+        else
+          false
+        end
+      end
+    else
+    #capture logic
+      capture?(move)
+    end
 
   end
 
@@ -123,7 +149,7 @@ class Pawn < Piece
     end
     self.move_dirs.each do |dir|
       potential_move = [dir[0] + @pos[0], dir[1] + @pos[1]]
-      moves << potential_move if valid_move?(potential_move) || capture?(potential_move)
+      moves << potential_move if valid_move?(potential_move)
     end
 
   end
