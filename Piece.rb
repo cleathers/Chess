@@ -1,9 +1,11 @@
 class Piece
-  attr_reader :pos, :color
+  attr_reader :pos, :color, :display_value
   def initialize(color, pos, board)
     @color = color
     @pos = pos
     @board = board
+    @board[@pos] = self
+
   end
 
   def captured
@@ -21,6 +23,8 @@ class Piece
   def capture?(end_pos)
 
   end
+
+
   # Check if move on board
 
 end
@@ -56,6 +60,10 @@ class Rook < SlidingPiece
 
   def move_dirs
     HORIZONTAL
+  end
+
+  def to_s
+
   end
 end
 
@@ -104,10 +112,13 @@ end
 
 
 class Pawn < Piece
-  PAWN_MOVES_W = [[0,1][-1,1][1,1]]
-  PAWN_MOVES_B = [[0,-1][-1,-1][1,-1]]
+  PAWN_MOVES_B = [[0,1],[-1,1],[1,1]]
+  PAWN_MOVES_W = [[0,-1],[-1,-1],[1,-1]]
+
   def initalize
+    super
     @first_move = true
+    @display_value = "P"
   end
 
   def capture?(move)
@@ -128,7 +139,7 @@ class Pawn < Piece
     if delta == 0
       if @board.on_board?(move)
         if @board[move] == nil
-           true
+          true
         else
           false
         end
@@ -144,24 +155,25 @@ class Pawn < Piece
     moves = []
     if @first_move
       @frist_move = false
-      first_move = (self.color == "B" ? [0,-2] : [0,2])
+      first_move = (self.color == :black ? [0,-2] : [0,2])
       moves << first_move if valid_move?(first_move)
     end
     self.move_dirs.each do |dir|
       potential_move = [dir[0] + @pos[0], dir[1] + @pos[1]]
       moves << potential_move if valid_move?(potential_move)
     end
-
+    moves
   end
 
   def move_dirs
-    if @color == 'B'
+    if @color == :black
       PAWN_MOVES_B
     else
       PAWN_MOVES_W
     end
 
   end
+
 
 
 end
