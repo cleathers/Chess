@@ -16,12 +16,25 @@ class Piece
     @board[@pos, new_pos]
   end
 
-  def valid_move?(end_pos)
-
+  def valid_move?(move)
+    if @board.on_board?(move)
+      if @board[move] == nil
+        true
+      else
+        false
+      end
+    end
   end
 
-  def capture?(end_pos)
-
+  def capture?(move)
+    if @board.on_board?(move)
+      piece = @board[move]
+      if piece.color != self.color
+         true
+      else
+        false
+      end
+    end
   end
 
 
@@ -41,11 +54,11 @@ class SlidingPiece < Piece
       while legal
         move =  [@pos[0] + x, @pos[1] + y]
         if valid_move?(move)
-          available_moves << move
+          moves << move
           x += dir[0]
           y += dir[1]
         elsif capture?(move)
-          available_moves << move
+          moves << move
           legal = false
         else
           legal = false
@@ -96,14 +109,14 @@ class SteppingPiece < Piece
 
 end
 
-class King < SlidingPiece
+class King < SteppingPiece
 
   def move_dirs
     KING_MOVES
   end
 end
 
-class Knight < SlidingPiece
+class Knight < SteppingPiece
 
   def move_dirs
     KNIGHT_MOVES
