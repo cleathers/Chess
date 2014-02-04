@@ -12,7 +12,7 @@ class Board
 
   def []=(pos, mark)
     x, y = pos[0], pos[1]
-    @rows[x][y] = mark
+    @board[x][y] = mark
   end
 
 
