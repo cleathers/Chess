@@ -26,7 +26,7 @@ class Board
   end
 
   def in_check?(color)
-
+    debugger
     king_pos = nil
     @board.each do |row|
       row.each do |piece|
@@ -47,10 +47,14 @@ class Board
 
   def dup_board
     duped_board = Board.new
-    @board.each do |row|
+    self.board.each do |row|
       row.each do |tile|
         if tile != nil
-          tile.class.new(tile.color, tile.pos, duped_board)
+           # if tile.pos == [1,4]
+            # debugger
+            #end
+            tile_pos = [tile.pos[0], tile.pos[1]]
+          tile.class.new(tile.color, tile_pos, duped_board)
         end
       end
     end
@@ -67,16 +71,46 @@ class Board
       duped_board[start].pos = end_pos
       duped_board[start], duped_board[end_pos] = nil, duped_board[start]
       duped_board[start].first_move = false if duped_board[start].class == Pawn
-    # Redo in_check? by somehow passing it the dupped board
-  if !duped_board.in_check?(duped_board[end_pos].color)
-    raise PutYoSelfInCheckError
-  else
-    if self[start].moves.include?(end_pos)
-      self[start].pos = end_pos
-      self[start], self[end_pos] = nil, self[start]
-      self[start].first_move = false if self[start].class == Pawn
-      raise IllegalMoveError
+
+      if duped_board.in_check?(duped_board[end_pos].color)
+        raise PutYoSelfInCheckError
+      else
+        self[start].pos = end_pos
+        self[start], self[end_pos] = nil, self[start]
+        self[start].first_move = false if self[start].class == Pawn
+        other_color = (self[start].color == :white ? :black : :white)
+        if board.in_check?(other_color)
+          checkmate?(other_color)
+
+        end
+      end
+    end
+  end
+
+  def checkmate?(color)
+    all_moves_avaliable = []
+    duped_board = self.dup_board
+    duped_board.board.each do |row|
+      row.each do |tile|
+        all_moves_avaliable << [tile.pos, tile.moves] if tile.color == color
+      end
+    end
+
+    all_moves_avaliable.each do |tile|
+
+
     end
   end
 
 end
+
+
+
+
+
+
+
+
+
+
+
