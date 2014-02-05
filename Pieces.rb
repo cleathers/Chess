@@ -1,5 +1,6 @@
 class Piece
-  attr_reader :pos, :color, :display_value
+  attr_reader :color, :display_value
+  attr_accessor :pos
   def initialize(color, pos, board)
     @color = color
     @pos = pos
@@ -168,7 +169,7 @@ class Pawn < Piece
 
   def moves
     moves = []
-    debugger
+  #  debugger
     if @first_move
 
       first_move = (self.color == :black ? [-2,0] : [2,0])
