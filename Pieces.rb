@@ -125,10 +125,11 @@ end
 
 
 class Pawn < Piece
-  PAWN_MOVES_B = [[0,1],[-1,1],[1,1]]
-  PAWN_MOVES_W = [[0,-1],[-1,-1],[1,-1]]
+  PAWN_MOVES_W = [[1,0],[1,-1],[1,1]]
+  PAWN_MOVES_B = [[-1,0],[-1,-1],[-1,1]]
+  attr_accessor :first_move
 
-  def initalize
+  def initialize(color, pos, board)
     super
     @first_move = true
     @display_value = "P"
@@ -147,9 +148,9 @@ class Pawn < Piece
   end
 
   def valid_move?(move)
-    delta = move[0] - @pos[0]
+    delta = move[1] - @pos[1]
     # move logic
-    if delta == 0
+    if delta == 0 || (@first_move && move[0] == @pos[0])
       if @board.on_board?(move)
         if @board[move] == nil
           true
@@ -166,16 +167,21 @@ class Pawn < Piece
 
   def moves
     moves = []
+
     if @first_move
-      @frist_move = false
-      first_move = (self.color == :black ? [0,-2] : [0,2])
-      moves << first_move if valid_move?(first_move)
+
+      first_move = (self.color == :black ? [-2,0] : [2,0])
+      potential_move = [first_move[0] + @pos[0], first_move[1] + @pos[1]]
+       if valid_move?(potential_move)
+
+         moves << potential_move
+       end
     end
     self.move_dirs.each do |dir|
       potential_move = [dir[0] + @pos[0], dir[1] + @pos[1]]
       moves << potential_move if valid_move?(potential_move)
     end
-    moves
+    p moves
   end
 
   def move_dirs
