@@ -48,8 +48,10 @@ class Board
     raise StandardError if self[start] == nil
     if self[start].moves.include?(end_pos)
       self[start].pos = end_pos
+      self[start].first_move = false if self[start].class == Pawn
       if self.in_check?(self[end_pos].color)
         self[end_pos].pos = start
+        self[start].first_move = true if self[start].class == Pawn
         #raise PutYoSelfInCheckError
       end
     else
