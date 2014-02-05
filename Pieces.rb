@@ -136,7 +136,8 @@ class Pawn < Piece
   end
 
   def capture?(move)
-    piece = @board[move]
+
+    piece = @board[move] if @board.on_board?(move)
     if piece == nil
       false
     elsif piece.color != self.color
@@ -167,7 +168,7 @@ class Pawn < Piece
 
   def moves
     moves = []
-
+    debugger
     if @first_move
 
       first_move = (self.color == :black ? [-2,0] : [2,0])
