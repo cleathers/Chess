@@ -3,7 +3,7 @@ require './Pieces.rb'
 
 class Game
   attr_reader :board
-  def initialize(filename = nil)
+  def initialize()
 
     self.run
   end
@@ -11,6 +11,7 @@ class Game
   def run
     @board = Board.new
     self.place_pieces
+
 
   end
 

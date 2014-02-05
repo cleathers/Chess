@@ -25,25 +25,7 @@ class Board
     true
   end
 
-  def in_check?(color)
-    debugger
-    king_pos = nil
-    @board.each do |row|
-      row.each do |piece|
-        king_pos = piece.pos if piece.class == King && piece.color == color
-      end
-    end
-    other_color = (color == :white ? :black : :white)
 
-    @board.each do |row|
-      row.each do |piece|
-        next if piece == nil
-        return true if piece.moves.include?(king_pos) && piece.color == other_color
-      end
-    end
-
-    false
-  end
 
   def dup_board
     duped_board = Board.new
@@ -63,52 +45,78 @@ class Board
 
 
   def move(start, end_pos)
-    debugger
     raise NoPieceError if self[start] == nil
 
+    if dup_move?(start, end_pos)
+      make_move(start, end_pos)
+    end
+  end
+
+  def dup_move?(start, end_pos)
     duped_board = self.dup_board
+
     if duped_board[start].moves.include?(end_pos)
       duped_board[start].pos = end_pos
       duped_board[start], duped_board[end_pos] = nil, duped_board[start]
       duped_board[start].first_move = false if duped_board[start].class == Pawn
 
-      if duped_board.in_check?(duped_board[end_pos].color)
-        raise PutYoSelfInCheckError
-      else
-        self[start].pos = end_pos
-        self[start], self[end_pos] = nil, self[start]
-        self[start].first_move = false if self[start].class == Pawn
-        other_color = (self[start].color == :white ? :black : :white)
-        if board.in_check?(other_color)
-          checkmate?(other_color)
+      return false if duped_board.in_check?(duped_board[end_pos].color)
+      return true
+    end
 
-        end
-      end
+    false
+  end
+
+  def make_move(start, end_pos)
+    self[start].pos = end_pos
+    self[start], self[end_pos] = nil, self[start]
+    self[start].first_move = false if self[start].class == Pawn
+    other_color = (self[end_pos].color == :white ? :black : :white)
+    if self.in_check?(other_color)
+      checkmate?(other_color)
     end
   end
 
   def checkmate?(color)
-    all_moves_avaliable = []
-    duped_board = self.dup_board
-    duped_board.board.each do |row|
+    @board.each do |row|
       row.each do |tile|
-        all_moves_avaliable << [tile.pos, tile.moves] if tile.color == color
+        if tile != nil && tile.color == color
+          tile.moves.each do |move|
+            if dup_move?(tile.pos, move)
+              return false
+            end
+          end
+        end
+      end
+    end
+    p "in checkmate"
+     return true
+  end
+
+
+
+  def in_check?(color)
+
+    king_pos = nil
+    @board.each do |row|
+      row.each do |piece|
+        king_pos = piece.pos if piece.class == King && piece.color == color
+      end
+    end
+    other_color = (color == :white ? :black : :white)
+
+    @board.each do |row|
+      row.each do |piece|
+        next if piece == nil
+        return true if piece.moves.include?(king_pos) && piece.color == other_color
       end
     end
 
-    all_moves_avaliable.each do |tile|
-
-
-    end
+    false
   end
 
+
 end
-
-
-
-
-
-
 
 
 
