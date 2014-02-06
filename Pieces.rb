@@ -1,3 +1,4 @@
+# encoding: utf-8
 class Piece
   attr_reader :color, :display_value
   attr_accessor :pos
@@ -26,6 +27,7 @@ class Piece
       end
     end
   end
+
 
   def capture?(move)
     if @board.on_board?(move)
@@ -72,6 +74,11 @@ end
 
 class Rook < SlidingPiece
 
+  def initialize(color, pos, board)
+    super
+    @display_value = (@color == :black ? "♜" : "♖")
+  end
+
   def move_dirs
     HORIZONTAL
   end
@@ -82,12 +89,22 @@ class Rook < SlidingPiece
 end
 
 class Bishop < SlidingPiece
+
+  def initialize(color, pos, board)
+    super
+    @display_value = (@color == :black ? "♝" : "♗")
+  end
+
   def move_dirs
     DIAG
   end
 end
 
 class Queen < SlidingPiece
+  def initialize(color, pos, board)
+    super
+    @display_value = (@color == :black ? "♛" : "♕")
+  end
 
   def move_dirs
     DIAG + HORIZONTAL
@@ -112,12 +129,22 @@ end
 
 class King < SteppingPiece
 
+  def initialize(color, pos, board)
+    super
+    @display_value = (@color == :black ? "♚" : "♔")
+  end
+
   def move_dirs
     KING_MOVES
   end
 end
 
 class Knight < SteppingPiece
+
+  def initialize(color, pos, board)
+    super
+    @display_value = (@color == :black ? "♞" : "♘")
+  end
 
   def move_dirs
     KNIGHT_MOVES
@@ -126,6 +153,7 @@ end
 
 
 class Pawn < Piece
+
   PAWN_MOVES_W = [[1,0],[1,-1],[1,1]]
   PAWN_MOVES_B = [[-1,0],[-1,-1],[-1,1]]
   attr_accessor :first_move
@@ -133,7 +161,7 @@ class Pawn < Piece
   def initialize(color, pos, board)
     super
     @first_move = true
-    @display_value = "P"
+    @display_value = (@color == :black ? "♟" : "♙")
   end
 
   def capture?(move)
@@ -150,6 +178,7 @@ class Pawn < Piece
   end
 
   def valid_move?(move)
+
     delta = move[1] - @pos[1]
     # move logic
     if delta == 0 || (@first_move && move[0] == @pos[0])
@@ -169,7 +198,7 @@ class Pawn < Piece
 
   def moves
     moves = []
-  #  debugger
+
     if @first_move
 
       first_move = (self.color == :black ? [-2,0] : [2,0])
@@ -179,11 +208,12 @@ class Pawn < Piece
          moves << potential_move
        end
     end
+
     self.move_dirs.each do |dir|
       potential_move = [dir[0] + @pos[0], dir[1] + @pos[1]]
       moves << potential_move if valid_move?(potential_move)
     end
-    p moves
+    moves
   end
 
   def move_dirs

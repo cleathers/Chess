@@ -32,9 +32,7 @@ class Board
     self.board.each do |row|
       row.each do |tile|
         if tile != nil
-           # if tile.pos == [1,4]
-            # debugger
-            #end
+
             tile_pos = [tile.pos[0], tile.pos[1]]
           tile.class.new(tile.color, tile_pos, duped_board)
         end
@@ -60,7 +58,7 @@ class Board
       duped_board[start], duped_board[end_pos] = nil, duped_board[start]
       duped_board[start].first_move = false if duped_board[start].class == Pawn
 
-      return false if duped_board.in_check?(duped_board[end_pos].color)
+      raise PutYoSelfInCheckError if duped_board.in_check?(duped_board[end_pos].color)
       return true
     end
 
@@ -71,10 +69,6 @@ class Board
     self[start].pos = end_pos
     self[start], self[end_pos] = nil, self[start]
     self[start].first_move = false if self[start].class == Pawn
-    other_color = (self[end_pos].color == :white ? :black : :white)
-    if self.in_check?(other_color)
-      checkmate?(other_color)
-    end
   end
 
   def checkmate?(color)
@@ -89,7 +83,7 @@ class Board
         end
       end
     end
-    p "in checkmate"
+
      return true
   end
 
