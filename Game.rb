@@ -1,6 +1,7 @@
 # encoding: utf-8
 require './Board.rb'
 require './Pieces.rb'
+require './Error.rb'
 
 class Game
   attr_reader :board
@@ -33,15 +34,17 @@ class Game
   end
 
   def turn
-
+    p "display Board"
     while game_over == false
       begin
         self.display_board
         pair = get_user_input
+        debugger
         @board.move(pair[0], pair[1])
-        raise IllegalMoveError if @board.board[pair[0]] != nil
-      rescue => e
-        e.message
+        raise IllegalMoveError.new if @board[pair[0]] != nil
+      rescue IllegalMoveError, NoPieceError => e
+        puts e.class
+        puts e.our_message
         retry
       end
       @turn = (@turn == :white ? :black : :white)
@@ -65,15 +68,10 @@ class Game
       end_pos = [end_pos[1].to_i, end_pos[3].to_i]
 
       [start, end_pos]
-    rescue => e
-      puts e.class
-      puts e.message
-
-
   end
 
   def display_board
-    board = "0 1 2 3 4 5 6 7 -"
+    board = "0 1 2 3 4 5 6 7 -\n"
     8.times do |col|
       row_str = ""
       8.times do |row|
@@ -81,12 +79,12 @@ class Game
         row_str += " _ " if tile == nil
         row_str += " #{tile.display_value} " if tile != nil
       end
-      row_str += " #{row}\n"
+      row_str += " #{col}\n"
       board += row_str
     end
     puts board
   end
 
 end
-
+Game.new
 

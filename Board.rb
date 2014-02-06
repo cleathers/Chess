@@ -43,7 +43,7 @@ class Board
 
 
   def move(start, end_pos)
-    raise NoPieceError if self[start] == nil
+    raise NoPieceError.new if self[start] == nil
 
     if dup_move?(start, end_pos)
       make_move(start, end_pos)
@@ -58,7 +58,7 @@ class Board
       duped_board[start], duped_board[end_pos] = nil, duped_board[start]
       duped_board[start].first_move = false if duped_board[start].class == Pawn
 
-      raise PutYoSelfInCheckError if duped_board.in_check?(duped_board[end_pos].color)
+      raise PutYoSelfInCheckError.new if duped_board.in_check?(duped_board[end_pos].color)
       return true
     end
 
